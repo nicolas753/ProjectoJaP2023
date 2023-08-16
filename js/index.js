@@ -12,3 +12,9 @@ document.addEventListener("DOMContentLoaded", function(){
         window.location = "products.html"
     });
 });
+
+// Redirecciona a login si no hay una sesión iniciada y está en index.html
+if (!sessionStorage.getItem("isLoggedIn") && window.location.pathname.endsWith("index.html")) {
+    window.location.href = "login.html";
+  }
+

@@ -13,8 +13,9 @@ document.addEventListener("DOMContentLoaded", function(){
     });
 });
 
-// Redirecciona a login si no hay una sesión iniciada y está en index.html
-if (!sessionStorage.getItem("isLoggedIn") && window.location.pathname.endsWith("index.html")) {
+const isLoggedIn = localStorage.getItem("password") !== null && localStorage.getItem("email") !== null;
+window.addEventListener("load", () =>{
+if (!isLoggedIn){
     window.location.href = "login.html";
-  }
+  }});
 

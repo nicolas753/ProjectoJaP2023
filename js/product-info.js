@@ -29,11 +29,29 @@ function displayProductInfo(product) {
   productInfoContainer.className = "mb-2";
   productInfoContainer.innerHTML = `
     <h2 class="mb-5 mt-5">${product.name}
-    <button type="button" class="btn btn-info float-end m-2">Comprar</button>
+    <button type="button" class="btn btn-pay float-end m-2">Comprar</button>
     </h2><hr>
     <div>
       <strong>Descripción</strong>
-      <a class="float-end m-2 text-reset text-decoration-none " href="products.html"><i class="fas fa-arrow-left"></i> Volver al listado</a>
+      <a class="float-end m-2 text-reset text-decoration-none" href="products.html">
+      <button class="cssbuttons-io-button">
+  Volver
+  <div class="icon">
+    <svg
+      height="24"
+      width="24"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="M0 0h24v24H0z" fill="none"></path>
+      <path
+        d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z"
+        fill="currentColor"
+      ></path>
+    </svg>
+  </div>
+</button>
+</a>
       <p>${product.description}</p>
     </div>
     <div>
@@ -52,9 +70,10 @@ function displayProductInfo(product) {
   `;
 
   // Botón comprar
-const buyButton = productInfoContainer.querySelector(".btn.btn-info.float-end");
+const buyButton = productInfoContainer.querySelector(".btn.btn-pay.float-end");
 buyButton.addEventListener("click", () => {
   // Obtiene la información del producto
+  const productId = product.id;
   const productName = product.name;
   const productCost = product.cost;
   const productCurrency = product.currency;
@@ -63,6 +82,7 @@ buyButton.addEventListener("click", () => {
 
   // Objeto que representa el producto
   const productToAdd = {
+    id: productId,
     name: productName,
     unitCost: productCost,
     currency: productCurrency,
@@ -140,7 +160,7 @@ function displayRelatedProducts(relatedProducts) {
     relatedProductCard.classList.add("col-md-4");
 
     relatedProductCard.innerHTML = `
-      <div class="card mb-4 shadow-sm">
+      <div class="card mb-4 shadow-sm related-product-card">
         <img src="${relatedProduct.image}" class="img-fluid product-image">
         <div class="card-body">
           <h6 class="card-title">${relatedProduct.name}</h6>
@@ -321,3 +341,83 @@ if (logUser && emailDropdown) {
      window.location.href = "login.html";
    });
  }
+
+ /*!
+ Inicio del codigo darkmode/light/auto
+ */
+
+(() => {
+  'use strict'
+
+  const storedTheme = localStorage.getItem('theme')
+
+  const getPreferredTheme = () => {
+    if (storedTheme) {
+      return storedTheme
+    }
+
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  }
+
+  const setTheme = function (theme) {
+    if (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.setAttribute('data-bs-theme', 'dark')
+    } else {
+      document.documentElement.setAttribute('data-bs-theme', theme)
+    }
+  }
+
+  setTheme(getPreferredTheme())
+
+  const showActiveTheme = (theme, focus = false) => {
+    const themeSwitcher = document.querySelector('#bd-theme')
+
+    if (!themeSwitcher) {
+      return
+    }
+
+    const themeSwitcherText = document.querySelector('#bd-theme-text')
+    const activeThemeIcon = document.querySelector('.theme-icon-active use')
+    const btnToActive = document.querySelector(`[data-bs-theme-value="${theme}"]`)
+    const svgOfActiveBtn = btnToActive.querySelector('svg use').getAttribute('href')
+
+    document.querySelectorAll('[data-bs-theme-value]').forEach(element => {
+      element.classList.remove('active')
+      element.setAttribute('aria-pressed', 'false')
+    })
+
+    btnToActive.classList.add('active')
+    btnToActive.setAttribute('aria-pressed', 'true')
+    activeThemeIcon.setAttribute('href', svgOfActiveBtn)
+    const themeSwitcherLabel = `${themeSwitcherText.textContent} (${btnToActive.dataset.bsThemeValue})`
+    themeSwitcher.setAttribute('aria-label', themeSwitcherLabel)
+
+    if (focus) {
+      themeSwitcher.focus()
+    }
+  }
+
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+    if (storedTheme !== 'light' || storedTheme !== 'dark') {
+      setTheme(getPreferredTheme())
+    }
+  })
+
+  window.addEventListener('DOMContentLoaded', () => {
+    showActiveTheme(getPreferredTheme())
+
+    document.querySelectorAll('[data-bs-theme-value]')
+      .forEach(toggle => {
+        toggle.addEventListener('click', () => {
+          const theme = toggle.getAttribute('data-bs-theme-value')
+          localStorage.setItem('theme', theme)
+          setTheme(theme)
+          showActiveTheme(theme, true)
+        })
+      })
+  })
+})()
+
+/*!
+Fin del codigo darkmode/light/auto
+*/
